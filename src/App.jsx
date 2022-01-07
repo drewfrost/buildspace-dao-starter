@@ -1,6 +1,7 @@
 import { useWeb3 } from '@3rdweb/hooks';
 import { ThirdwebSDK } from '@3rdweb/sdk';
 import { ethers } from 'ethers';
+import { UnsupportedChainIdError } from '@web3-react/core';
 import { useEffect, useState, useMemo } from 'react';
 
 const sdk = new ThirdwebSDK(process.env.REACT_APP_ETHEREUM_NETWORK);
@@ -14,7 +15,7 @@ const voteModule = sdk.getVoteModule(
   process.env.REACT_APP_GOVERNANCE_CONTRACT_ADDRESS
 );
 const App = () => {
-  const { connectWallet, address, provider } = useWeb3();
+  const { connectWallet, address, provider, error } = useWeb3();
   console.log('👋 Address:', address);
 
   const [claimedNFT, setClaimedNFT] = useState(false);
@@ -160,6 +161,18 @@ const App = () => {
       });
   };
 
+  if (error instanceof UnsupportedChainIdError) {
+    return (
+      <div className="unsupported-network">
+        <h2>Please connect to Rinkeby</h2>
+        <p>
+          This dapp only works on the Rinkeby network, please switch networks in
+          your connected wallet.
+        </p>
+      </div>
+    );
+  }
+
   if (!address) {
     return (
       <div className="landing">
@@ -204,9 +217,7 @@ const App = () => {
                 e.preventDefault();
                 e.stopPropagation();
 
-
                 setIsVoting(true);
-
 
                 const votes = proposals.map((proposal) => {
                   let voteResult = {
@@ -227,25 +238,19 @@ const App = () => {
                   return voteResult;
                 });
 
-
                 try {
-
                   const delegation = await tokenModule.getDelegationOf(address);
 
                   if (delegation === ethers.constants.AddressZero) {
-
                     await tokenModule.delegateTo(address);
                   }
 
                   try {
                     await Promise.all(
                       votes.map(async (vote) => {
-
-
                         const proposal = await voteModule.get(vote.proposalId);
 
                         if (proposal.state === 1) {
-
                           return voteModule.vote(vote.proposalId, vote.vote);
                         }
 
@@ -253,15 +258,11 @@ const App = () => {
                       })
                     );
                     try {
-
-
                       await Promise.all(
                         votes.map(async (vote) => {
-
                           const proposal = await voteModule.get(
                             vote.proposalId
                           );
-
 
                           if (proposal.state === 4) {
                             return voteModule.execute(vote.proposalId);
@@ -281,7 +282,6 @@ const App = () => {
                 } catch (err) {
                   console.error('failed to delegate tokens');
                 } finally {
-
                   setIsVoting(false);
                 }
               }}
@@ -297,7 +297,6 @@ const App = () => {
                           id={proposal.proposalId + '-' + vote.type}
                           name={proposal.proposalId}
                           value={vote.type}
-
                           defaultChecked={vote.type === 2}
                         />
                         <label htmlFor={proposal.proposalId + '-' + vote.type}>
@@ -334,6 +333,6 @@ const App = () => {
       </button>
     </div>
   );
-};;;
+};
 
 export default App;
