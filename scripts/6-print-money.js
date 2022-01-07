@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // This is the address of our ERC-20 contract printed out in the step before.
-const tokenModule = sdk.getTokenModule(process.env.ERC20_CONTRACT_ADDRESS);
+const tokenModule = sdk.getTokenModule(
+  process.env.REACT_APP_ERC20_CONTRACT_ADDRESS
+);
 
 (async () => {
   try {
