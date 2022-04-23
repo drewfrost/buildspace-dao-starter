@@ -4,16 +4,15 @@ import { ethers } from 'ethers';
 import { UnsupportedChainIdError } from '@web3-react/core';
 import { useEffect, useState, useMemo } from 'react';
 
-const sdk = new ThirdwebSDK(process.env.REACT_APP_ETHEREUM_NETWORK);
-const bundleDropModule = sdk.getBundleDropModule(
-  process.env.REACT_APP_BUNDLE_DROP_ADDRESS
-);
-const tokenModule = sdk.getTokenModule(
-  process.env.REACT_APP_ERC20_CONTRACT_ADDRESS
-);
-const voteModule = sdk.getVoteModule(
-  process.env.REACT_APP_GOVERNANCE_CONTRACT_ADDRESS
-);
+const ETHEREUM_NETWORK = 'rinkeby';
+const sdk = new ThirdwebSDK(ETHEREUM_NETWORK);
+const BUNDLE_DROP_ADDRESS = '0xEBb9ED028f1652147c144E40c6501B2Cdf75F341';
+const ERC20_CONTRACT_ADDRESS = '0x41951a9d1c3013dbd694d609f127256752c4da06';
+const GOVERNANCE_CONTRACT_ADDRESS =
+  '0x995552EF7E59EedD2e86D05b1C0D0616b6c1286f';
+const bundleDropModule = sdk.getBundleDropModule(BUNDLE_DROP_ADDRESS);
+const tokenModule = sdk.getTokenModule(ERC20_CONTRACT_ADDRESS);
+const voteModule = sdk.getVoteModule(GOVERNANCE_CONTRACT_ADDRESS);
 const App = () => {
   const { connectWallet, address, provider, error } = useWeb3();
   console.log('👋 Address:', address);
