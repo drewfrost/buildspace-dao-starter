@@ -49,8 +49,13 @@ jobs:
         git config --global user.email $user_email
         git remote set-url origin https://${github_token}@github.com/${repository}
         npm run deploy
+        
       env:
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
         github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+        REACT_APP_BUNDLE_DROP_ADDRESS: ${{ secrets.REACT_APP_BUNDLE_DROP_ADDRESS }}
+        REACT_APP_ERC20_CONTRACT_ADDRESS: ${{ secrets.REACT_APP_ERC20_CONTRACT_ADDRESS }}
+        REACT_APP_ETHEREUM_NETWORK: ${{ secrets.REACT_APP_ETHEREUM_NETWORK }}
+        REACT_APP_GOVERNANCE_CONTRACT_ADDRESS: ${{ secrets.REACT_APP_GOVERNANCE_CONTRACT_ADDRESS }}
         repository: ${{ github.repository }}
